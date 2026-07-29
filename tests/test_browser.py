@@ -150,7 +150,56 @@ def run_test():
             page.screenshot(path=str(screenshot_path), full_page=True)
             print(f"[screenshot] {screenshot_path}")
 
+            # ===== 交互测试：点击 H1 → H3 落子 =====
+            print("\n[interact] 模拟点击 H1 → H3 落子")
+            # H1 = col 7, row 0；H3 = col 7, row 2
+            # 棋盘由 32px margin + 32px cell，CSS 640×640
+            # canvas 的 x = 32 + col*32, y = 32 + (18-row)*32
+            # H1: x=32+7*32=256, y=32+18*32=608
+            # H3: x=32+7*32=256, y=32+16*32=544
+            canvas_box = page.locator("#board").bounding_box()
+            scale = canvas_box["width"] / 640
+            h1_x = canvas_box["x"] + (32 + 7 * 32) * scale
+            h1_y = canvas_box["y"] + (32 + 18 * 32) * scale
+            h3_x = canvas_box["x"] + (32 + 7 * 32) * scale
+            h3_y = canvas_box["y"] + (32 + 16 * 32) * scale
+
+            page.mouse.click(h1_x, h1_y)
+            page.wait_for_timeout(100)
+            page.mouse.click(h3_x, h3_y)
+            page.wait_for_timeout(200)
+
+            # 验证状态更新
+            after_move = page.evaluate("""() => {
+              const g = window.game;
+              const sheet = document.querySelector('#scoresheet').innerHTML;
+              return {
+                pieceCount: g.state.pieces.length,
+                turn: g.state.turn,
+                moveCount: g.record.moves.length,
+                lastMove: g.lastMove,
+                pieceAtH1: g.state.pieces.find(p => p.col === 7 && p.row === 0),
+                pieceAtH3: g.state.pieces.find(p => p.col === 7 && p.row === 2),
+                scoresheet: sheet,
+              };
+            }""")
+            print(f"[after move] {after_move}")
+
+            after_screenshot = SCREENSHOT_DIR / "after_first_move.png"
+            page.screenshot(path=str(after_screenshot), full_page=True)
+            print(f"[screenshot] {after_screenshot}")
+
+            # 断言
+            assert after_move["turn"] == "black", f"轮到黑方，实际 {after_move['turn']}"
+            assert after_move["moveCount"] == 1, f"应有 1 步，实际 {after_move['moveCount']}"
+            assert after_move["pieceAtH1"] is None, "H1 应空"
+            assert after_move["pieceAtH3"] is not None, "H3 应该有子"
+            assert after_move["scoresheet"].count("H1→H3") == 1, "棋谱应显示 H1→H3"
+
+            print("[OK] 交互测试通过：点击 H1 → H3 落子成功")
+
             # 报告
+            print("\n========== 报告 ==========")
             print("\n========== 报告 ==========")
             print(f"console 日志（{len(console_logs)} 条）：")
             for log in console_logs:
