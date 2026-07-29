@@ -61,6 +61,7 @@ from codes.ai import (
     state_hash,
     ai_choose,
 )
+from codes.replay import Record, move_to_notation, record_to_text
 
 __all__ = [
     # 棋盘常量
@@ -117,4 +118,8 @@ __all__ = [
     "gen_moves",
     "state_hash",
     "ai_choose",
+    # 棋谱
+    "Record",
+    "move_to_notation",
+    "record_to_text",
 ]
