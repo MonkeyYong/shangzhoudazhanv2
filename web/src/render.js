@@ -33,7 +33,9 @@ const PAL_BLACK = {
 export function fitCanvas(canvas) {
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
+  // 如果 CSS 还没加载（rect.width === 0），用 LOGICAL_PX 兜底
   const cssSize = Math.min(rect.width || LOGICAL_PX, LOGICAL_PX);
+  if (cssSize <= 0) return; // 防御性：极端情况不画
   canvas.style.width = cssSize + "px";
   canvas.style.height = cssSize + "px";
   canvas.width = Math.round(cssSize * dpr);

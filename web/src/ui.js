@@ -79,6 +79,11 @@ export class Game {
     });
 
     fitCanvas(this.canvas);
+    // 二次保险：CSS 加载或布局延迟时再 fit 一次
+    requestAnimationFrame(() => {
+      fitCanvas(this.canvas);
+      this._scheduleRender();
+    });
   }
 
   // ===== 事件 =====
