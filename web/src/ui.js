@@ -18,7 +18,7 @@ import {
   coordToStr, strToCoord,
 } from "./engine.js";
 
-import { render, fitCanvas, canvasToCell } from "./render.js";
+import { render, fitCanvas, fitCanvasWhenReady, canvasToCell } from "./render.js";
 
 export class Game {
   constructor(canvas, panel) {
@@ -78,12 +78,8 @@ export class Game {
       this.aiLevel = e.target.value;
     });
 
-    fitCanvas(this.canvas);
-    // 二次保险：CSS 加载或布局延迟时再 fit 一次
-    requestAnimationFrame(() => {
-      fitCanvas(this.canvas);
-      this._scheduleRender();
-    });
+    // 多次重试 fitCanvas（防御 CSS 异步加载 / 布局延迟）
+    fitCanvasWhenReady(this.canvas);
   }
 
   // ===== 事件 =====
@@ -361,12 +357,16 @@ export class Game {
   }
 
   _render() {
-    render(this.ctx, this.state, {
-      selected: this.selected,
-      legalMoves: this.legalMoves,
-      hoverCell: this._hoverCell,
-      lastMove: this.lastMove,
-    });
+    try {
+      render(this.ctx, this.state, {
+        selected: this.selected,
+        legalMoves: this.legalMoves,
+        hoverCell: this._hoverCell,
+        lastMove: this.lastMove,
+      });
+    } catch (e) {
+      console.error("[Game._render] render failed:", e, e.stack);
+    }
     this._renderPanel();
   }
 

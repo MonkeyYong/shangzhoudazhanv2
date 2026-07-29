@@ -44,6 +44,34 @@ export function fitCanvas(canvas) {
   ctx.setTransform(cssSize * dpr / LOGICAL_PX, 0, 0, cssSize * dpr / LOGICAL_PX, 0, 0);
 }
 
+let _fitRetryDone = false;
+
+export function fitCanvasWhenReady(canvas) {
+  // 详情：CSS 异步加载 + DOMContentLoaded 早于 window.load
+  // 多次重试 fitCanvas，确保 layout 完成后再绘制
+  const tryFit = (label) => {
+    fitCanvas(canvas);
+    const ok = canvas.width > 0 && canvas.height > 0;
+    console.debug(`[fitCanvas] ${label}: canvas.width=${canvas.width}, height=${canvas.height}, ` +
+      `rect.width=${canvas.getBoundingClientRect().width}`);
+    return ok;
+  };
+
+  // 立即试一次
+  if (tryFit("immediate")) return;
+
+  // 下一帧再试
+  requestAnimationFrame(() => {
+    if (tryFit("rAF")) return;
+    // 100ms 后再试（CSS 加载晚）
+    setTimeout(() => {
+      if (tryFit("100ms")) return;
+      // 1s 后兜底
+      setTimeout(() => tryFit("1s"), 1000);
+    }, 100);
+  });
+}
+
 function cellToXY(col, row) {
   return [MARGIN + col * CELL, MARGIN + (SIZE - 1 - row) * CELL];
 }
@@ -61,6 +89,10 @@ export { cellToXY, xyToCell, LOGICAL_PX, MARGIN, CELL };
 
 export function render(ctx, state, options = {}) {
   const { selected, legalMoves, hoverCell, lastMove } = options;
+  if (!ctx) {
+    console.warn("[render] ctx is null/undefined");
+    return;
+  }
   drawBoard(ctx);
   drawPalaceDecor(ctx);
   drawCoordinates(ctx);
