@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>商周大战 v2</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="board-wrap">
+      <canvas id="board" width="640" height="640"></canvas>
+    </div>
+
+    <div id="panel">
+      <h1>商周大战</h1>
+      <div class="plaque-rule"></div>
+
+      <section class="sect">
+        <div class="sect-title">局势</div>
+        <div id="turn-banner" class="turn-banner">
+          <div class="stone-dot"></div>
+          <span id="turn">白方</span>
+        </div>
+        <div class="king-cards">
+          <div class="king-card">
+            <span class="badge" style="background:#5a8a8a">周</span>
+            <div class="kc-state st-imprisoned" id="w-king-state">武王禁锢</div>
+            <div class="kc-clone">分身: <b id="w-clone-count">0</b></div>
+          </div>
+          <div class="king-card">
+            <span class="badge" style="background:#a83a3a">商</span>
+            <div class="kc-state st-imprisoned" id="b-king-state">武王禁锢</div>
+            <div class="kc-clone">分身: <b id="b-clone-count">0</b></div>
+          </div>
+        </div>
+        <div class="row">
+          <span>步数</span>
+          <span id="step-count">0</span>
+        </div>
+      </section>
+
+      <section class="sect">
+        <div class="sect-title">开局</div>
+        <select id="preset">
+          <option value="battle" selected>大战（22 子）</option>
+          <option value="small">小局（14 子）</option>
+          <option value="final">决战（34 子）</option>
+        </select>
+      </section>
+
+      <section class="sect">
+        <div class="sect-title">对手</div>
+        <select id="opponent">
+          <option value="human" selected>双人热座</option>
+          <option value="ai-white">AI 执白（先手）</option>
+          <option value="ai-black">AI 执黑（后手）</option>
+        </select>
+        <select id="level" disabled>
+          <option value="rookie">菜鸟</option>
+          <option value="advanced" selected>高手</option>
+          <option value="master">大师</option>
+        </select>
+      </section>
+
+      <section class="sect">
+        <div class="sect-title">操作</div>
+        <div class="btn-row">
+          <button id="btn-new">新局</button>
+          <button id="btn-undo">悔棋</button>
+        </div>
+        <div class="btn-row">
+          <button id="btn-export">导出棋谱</button>
+          <button id="btn-import">导入棋谱</button>
+          <input type="file" id="file-import" accept=".json" style="display:none">
+        </div>
+      </section>
+
+      <section class="sect sect-grow">
+        <div class="sect-title">棋谱</div>
+        <div id="scoresheet" class="scoresheet">
+          <div style="color:#888">尚无棋谱。</div>
+        </div>
+      </section>
+
+      <section class="sect">
+        <div id="hint" class="hint">点击棋子选中，再点目标格落子。</div>
+      </section>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
