@@ -1,0 +1,30 @@
+# IDE / 编辑器
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Claude / Serena 工具记忆
+.claude/settings.local.json
+.serena/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Node（前端若有）
+node_modules/
+*.log
