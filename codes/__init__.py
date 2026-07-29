@@ -49,6 +49,18 @@ from codes.rules import (
     apply_move,
     end_turn,
 )
+from codes.ai import (
+    AILevel,
+    AI_LEVELS,
+    AIChoice,
+    AI_M,
+    AITimeout,
+    TranspositionTable,
+    evaluate,
+    gen_moves,
+    state_hash,
+    ai_choose,
+)
 
 __all__ = [
     # 棋盘常量
@@ -94,4 +106,15 @@ __all__ = [
     "position_hash",
     "apply_move",
     "end_turn",
+    # AI 引擎
+    "AILevel",
+    "AI_LEVELS",
+    "AIChoice",
+    "AI_M",
+    "AITimeout",
+    "TranspositionTable",
+    "evaluate",
+    "gen_moves",
+    "state_hash",
+    "ai_choose",
 ]
