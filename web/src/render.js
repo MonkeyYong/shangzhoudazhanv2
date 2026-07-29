@@ -142,15 +142,15 @@ function drawCoordinates(ctx) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   for (let i = 0; i < SIZE; i++) {
-    const [x, _] = cellToXY(i, 0);
+    const [x] = cellToXY(i, 0);
     ctx.fillText(COL_LETTERS[i], x, MARGIN / 2);
-    const [x2, _2] = cellToXY(i, SIZE - 1);
+    const [x2] = cellToXY(i, SIZE - 1);
     ctx.fillText(COL_LETTERS[i], x2, LOGICAL_PX - MARGIN / 2);
   }
   for (let i = 0; i < SIZE; i++) {
-    const [_, y] = cellToXY(0, i);
+    const [, y] = cellToXY(0, i);
     ctx.fillText(String(i + 1), MARGIN / 2, y);
-    const [_, y2] = cellToXY(SIZE - 1, i);
+    const [, y2] = cellToXY(SIZE - 1, i);
     ctx.fillText(String(i + 1), LOGICAL_PX - MARGIN / 2, y2);
   }
 }
